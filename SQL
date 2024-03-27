@@ -1,0 +1,63 @@
+--Determining how often participants use their device/are tracking their daily activity--
+SELECT COUNT(ActivityDate),Id
+FROM `my-first-sandbox-project-1202.dailyActivity_merged.dailyActivity_data`
+GROUP BY Id;
+
+--Determining how often participants use their device/are tracking their daily sleep--
+SELECT COUNT(SleepDay),Id
+FROM `my-first-sandbox-project-1202.sleepday_merged.sleepday_data`
+GROUP BY Id;
+--Determining the number of entries of activity per day--
+SELECT COUNT (*),DayoftheWeek
+FROM `my-first-sandbox-project-1202.dailyActivity_merged.dailyActivity_data`
+GROUP BY DayoftheWeek;
+
+--Determining the daily average minutes of sleep and time in bed--
+SELECT DayoftheWeek,
+AVG(TotalMinutesAsleep),
+AVG(TotalTimeInBed)
+FROM `my-first-sandbox-project-1202.sleepday_merged.sleepday_data`
+GROUP BY DayoftheWeek;
+
+--Determining averages of activity--
+SELECT AVG(TotalSteps),
+AVG(TotalDistance),
+AVG(Calories),
+AVG(VeryActiveMinutes),
+AVG(FairlyActiveMinutes),
+AVG(LightlyActiveMinutes),
+AVG(SedentaryMinutes)
+FROM `my-first-sandbox-project-1202.dailyActivity_merged.dailyActivity_data` ;
+
+--Determining the daily averages of activity--
+SELECT DayoftheWeek,
+AVG(TotalSteps),
+AVG(TotalDistance),
+AVG(Calories)
+FROM `my-first-sandbox-project-1202.dailyActivity_merged.dailyActivity_data`
+GROUP BY DayoftheWeek;
+
+--Combining hourly calories and hourly steps tables--
+SELECT
+A.Id,
+A.ActivityDate,
+A.DayoftheWeek,
+A.ActivityHour,
+
+* EXCEPT
+(Id, ActivityDate,DayoftheWeek,ActivityHour)
+FROM `my-first-sandbox-project-1202.hourlyCalories_merged.hourlyCalories_data` A
+LEFT JOIN `my-first-sandbox-project-1202.hourlySteps_merged.hourlySteps_data` B
+ON
+A.Id=B.Id
+AND A.ActivityDate=B.ActivityDate
+AND A.DayoftheWeek=B.DayoftheWeek
+AND A.ActivityHour=B.ActivityHour;
+
+--Determining the average hourly steps and calories--
+SELECT ActivityHour,
+AVG(StepTotal),
+AVG(Calories)
+FROM `my-first-sandbox-project-1202.hourlySteps_calories_merged.hourlySteps_calories_data`
+GROUP BY ActivityHour
+ORDER BY ActivityHour ASC;
